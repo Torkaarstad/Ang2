@@ -14,7 +14,7 @@ import {
 import {bootstrap} from 'angular2/platform/browser';
 
 /**
- * Provides a `Product` object
+ * Provides a `Product` object 
  */
 class Product {
   constructor(
