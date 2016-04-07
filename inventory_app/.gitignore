@@ -143,9 +143,6 @@ publish/
 # Uncomment if necessary however generally it will be regenerated when needed
 #!**/packages/repositories.config
 
-# Windows Azure Build Output
-csx/
-*.build.csdef
 
 # Windows Store app package directory
 AppPackages/
@@ -242,8 +239,8 @@ crashlytics-build.properties
 fabric.properties
 
 ./typings
-src/**/*.js
-src/**/*.map
+*.js
+*.map
 node_modules/
 dist/
 jspm_packages
