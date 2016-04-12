@@ -49,13 +49,53 @@ System.register(['angular2/core', 'angular2/common', 'rxjs/Rx', 'rxjs/add/operat
                         var date = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + day);
                         startDates.push(date);
                     }
+                    //var obsInterval = Observable.interval(1000);
+                    //obsInterval
+                    //    .flatMap(x => {
+                    //        console.log("calling the server");
+                    //        return Observable.of([1, 2, 3]);
+                    //    })
+                    //    .subscribe(x => console.log(x));
+                    // ******************** forkJoin
+                    var userStream = Rx_1.Observable.of({
+                        userId: 1, username: 'tor'
+                    }).delay(2000);
+                    var tweetStream = Rx_1.Observable.of([1, 2, 3]).delay(1500);
                     Rx_1.Observable
-                        .fromArray(startDates)
-                        .map(function (date) {
-                        console.log("Getting deals for date " + date);
-                        return [1, 2, 3];
-                    })
-                        .subscribe(function (x) { return console.log(x); });
+                        .forkJoin(userStream, tweetStream)
+                        .map(function (join) { return new Object({ user: join[0], tweet: join[1] }); })
+                        .subscribe(function (result) { return console.log(result); }, function (error) { return console.error(error); });
+                    //***************** Exception:
+                    //var obsThrow = Observable.throw(new Error("Something failed"));
+                    //obsThrow.subscribe(
+                    //    x=> console.log(x),
+                    //    error => console.error(error)
+                    //);
+                    //*********************  AJAX
+                    var counter = 0;
+                    var ajaxCall = Rx_1.Observable.of('url')
+                        .flatMap(function () {
+                        if (++counter < 2)
+                            return Rx_1.Observable.throw(new Error("AJAX Request failed"));
+                        else
+                            return Rx_1.Observable.of([1, 2, 3]);
+                    });
+                    ajaxCall.retry(3)
+                        .subscribe(function (x) { return console.log(x); }, function (error) { return console.error(error); });
+                    //var obs = Observable
+                    //    .fromArray(startDates)
+                    //    .map(date => {
+                    //        console.log("fromArray: Getting deals for date " + date);
+                    //        return [1,2,3]
+                    //    })
+                    //    .subscribe(x=> console.log('fromArray' + x));
+                    //var obsOf = Observable
+                    //    .of(1,2,3)
+                    //    .map(date => {
+                    //        console.log("OF: Getting deals for date " + date);
+                    //        return [1, 2, 3]
+                    //    })
+                    //    .subscribe(x=> console.log('OF' + x));
                 };
                 AppComponent = __decorate([
                     core_1.Component({
