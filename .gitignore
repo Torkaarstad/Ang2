@@ -260,3 +260,6 @@ src/app/unientities.ts
 
 #remove coverage
 coverage
+*.js
+*.map
+*.docx
