@@ -1,0 +1,93 @@
+<h1>{{title}}</h1>
+<div class="row">
+    <div class="col-md-6 well">
+        <form [ngFormModel]="form" (ngSubmit)="save()">
+                <fieldset>
+                    <legend>User</legend>
+                    <label for="name">Name</label>
+                    <input id="name"
+                           [(ngModel)]="user.name"
+                           type="text"
+                           class="form-control"
+                           ngControl="name"
+                           #name="ngForm">
+                    <div *ngIf="name.touched && name.errors">
+                        {{name.errors | json}}
+                        <div class="alert alert-danger"
+                             *ngIf="name.errors.required">
+                            Name is required
+                        </div>
+                    </div>
+
+
+                    <label for="email">Email</label>
+                    <input id="email"
+                           [(ngModel)]="user.email"
+                           type="text"
+                           class="form-control"
+                           ngControl="email"
+                           #email="ngForm">
+                    <div *ngIf="email.touched && email.errors">
+
+                        <!--*ngIf references the ngControl-->
+                        {{email.errors | json}}
+                        <div class="alert alert-danger"
+                             *ngIf="email.errors.required">
+                            Email is required
+                        </div>
+                        <div class="alert alert-danger"
+                             *ngIf="email.errors.shouldHaveValidEmail">
+                            Email must be valid
+                        </div>
+                    </div>
+
+
+                    <label for="phone">Phone</label>
+                    <input id="phone"
+                           [(ngModel)]="user.phone"
+                           type="text"
+                           class="form-control"
+                           ngControl="phone"
+                           #phone="ngForm">
+                </fieldset>
+
+                <fieldset ngControlGroup="address">
+                    <legend>Address</legend>
+                    <label for="street">Street</label>
+                    <input id="street"
+                           [(ngModel)]="user.address.street"
+                           type="text"
+                           class="form-control"
+                           ngControl="street"
+                           #street="ngForm">
+
+                    <label for="suite">Suite</label>
+                    <input id="suite"
+                            [(ngModel)]="user.address.suite"
+                           type="text"
+                           class="form-control"
+                           ngControl="suite"
+                           #suite="ngForm">
+
+                    <label for="city">City</label>
+                    <input id="city"
+                           [(ngModel)]="user.address.city"
+                           type="text"
+                           class="form-control"
+                           ngControl="city"
+                           #city="ngForm">
+
+                    <label for="zipcode">ZipCode</label>
+                    <input id="zipcode"
+                           [(ngModel)]="user.address.zipcode"
+                           type="text"
+                           class="form-control"
+                           ngControl="zipcode"
+                           #zipcode="ngForm">
+
+                </fieldset>
+            <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Save</button>
+        </form>
+    </div>
+</div>
+

@@ -1,0 +1,14 @@
+https://angular.io/
+
+https://github.com/mosh-hamedani 
+
+http://getbootstrap.com/getting-started/ 
+http://getbootstrap.com/components/#navbar
+
+https://bootswatch.com/
+
+
+Users list:
+http://jsonplaceholder.typicode.com/
+
+
