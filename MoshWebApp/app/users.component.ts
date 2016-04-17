@@ -1,4 +1,5 @@
 import {Component, OnInit} from 'angular2/core';
+import {RouterLink} from 'angular2/router';
 import {HTTP_PROVIDERS} from 'angular2/http';
 
 import {User } from './user';
@@ -20,6 +21,10 @@ import {UserService } from './user.service';
     template: `
         <i *ngIf="_isLoading" class="fa fa-spinner fa-spin fa-3x"></i>
         <h2>Users</h2>
+
+        <p>
+            <a [routerLink]="['NewUser']" class="btn btn-primary">Add User</a>
+        </p>
         
         <table style="width:100%">
              <tr>
@@ -33,11 +38,17 @@ import {UserService } from './user.service';
                 <td>{{user.id}}</td>
                 <td>{{user.name}}</td>
                 <td>{{user.email}}</td> 
-                <td><i class="glyphicon glyphicon-edit"></i></td> 
+                <td>
+                    <a  [routerLink] ="['EditUser', {id: user.id}]">
+                        <i class="glyphicon glyphicon-edit">
+                        </i>
+                    </a>
+                </td> 
                 <td><i class="glyphicon glyphicon-remove"></i></td> 
             </tr>
         </table>
     `,
+    directives: [RouterLink],
     providers: [UserService, HTTP_PROVIDERS]
 })
 export class UsersComponent implements OnInit {
