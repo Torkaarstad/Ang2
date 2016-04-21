@@ -44,7 +44,7 @@ import {UserService } from './user.service';
                         </i>
                     </a>
                 </td> 
-                <td><i class="glyphicon glyphicon-remove"></i></td> 
+                <td><i (click)="deleteUser(user)" class="glyphicon glyphicon-remove clickable"></i></td> 
             </tr>
         </table>
     `,
@@ -66,6 +66,30 @@ export class UsersComponent implements OnInit {
             },
             null,
             () => { this._isLoading = false; });
+    }
+
+    deleteUser(user) {
+        if (confirm("Are you sure you want to delete " + user.name + "?")) {
+            console.log('Deleting ' + user.name + ', id: ' + user.id);
+
+            // Here, with the splice method, we remove 1 object
+            // at the given index.
+            var index = this._users.indexOf(user)
+            this._users.splice(index, 1);
+
+            this._userService.deleteUser(user.id)
+                .subscribe(x => {
+                    console.log("User deleted successfully.");
+                },
+                err => {
+                    alert("Could not delete the user.");
+                    // Revert the view back to its original state
+                    // by putting the user object at the index
+                    // it used to be.
+                    this._users.splice(index, 0, user);
+                }
+            );
+        }
     }
 
 }

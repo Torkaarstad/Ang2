@@ -65,7 +65,8 @@ export class UserComponent implements CanDeactivate, OnInit {
 
     save() {
         if (this.form.valid) {
-            this._userService.saveUser(this.form.value)
+
+            this._userService.saveUser(this.user)
                 .subscribe(x => {
                     // Ideally, here we'd want:
                     //this.form.markAsPristine();
@@ -73,7 +74,7 @@ export class UserComponent implements CanDeactivate, OnInit {
                     this._router.navigate(['Users']);
                 });
 
-            console.log("Successfully saved. ");
+
             //alert("Password successfully changed.");
         }
 
