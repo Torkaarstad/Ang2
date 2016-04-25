@@ -20,12 +20,29 @@ export class UserService {
     saveUser(user) {
         var url = this._baseUrl + "users";
 
-        return this._http.post(url, JSON.stringify(user)).map(res => res.json());
+        if (user.id > 0) {
+            //update
+            console.log("put user");
+            var url = this._baseUrl + "users/" + user.id;
+            return this._http.put(url, JSON.stringify(user)).map(res => res.json());
+        }
+        else {
+            //new user
+            console.log("post user");
+            return this._http.post(url, JSON.stringify(user)).map(res => res.json());
+        }
     };
 
     getUser(id){ 
         var url = this._baseUrl + "users/"+id;
         return this._http.get(url).
             map(res => res.json());
+    };
+
+    deleteUser(id) {
+        var url = this._baseUrl + "users/" + id;
+        return this._http.delete(url).
+            map(res => res.json());
+
     };
 }
