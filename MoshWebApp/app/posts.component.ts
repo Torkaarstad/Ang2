@@ -5,9 +5,13 @@ import {Post} from './post';
 import {Comment} from './comment';
 import {SpinnerComponent} from './spinner.component';
 
+import {User } from './user';
+import {UserService } from './user.service';
+
+
 @Component({
     selector: 'posts',
-	 styles: [`
+    styles: [`
          .posts li { cursor: default; }
          .posts li:hover { background: #ecf0f1; } 
          .postImage {border-radius: 100%;}
@@ -22,7 +26,13 @@ import {SpinnerComponent} from './spinner.component';
 	<h2>Posts</h2>
 	<div class="row">
 		<div class="col-md-6">
-			<spinner [isVisible]="_isLoading"></spinner>
+            <select class="form-control" (change)="onUserSelected({ userId: u.value })" #u>
+                <option value="">Select a user...</option>
+                <option *ngFor="#user of _users" value="{{user.id}}">
+                    {{user.name}}
+                </option>
+            </select>
+			<spinner [isVisible]="_postsLoading"></spinner>
 			<ul class="list-group posts">
 				<li 
 					class="list-group-item" 
@@ -43,7 +53,7 @@ import {SpinnerComponent} from './spinner.component';
 				<div class="panel-body">
 					<p>{{ currentPost.body }}</p>
                     <hr/>
-
+                    <spinner [isVisible]="_commentsLoading"></spinner>
                     <div class="media" *ngFor="#comment of currentPost.comments">
                         <div class="media-left">
                             <a href="#">
@@ -60,39 +70,63 @@ import {SpinnerComponent} from './spinner.component';
 		</div>		
 	</div>		
     `,
-    providers: [PostService, HTTP_PROVIDERS],
-	directives:[SpinnerComponent]
+    providers: [PostService, UserService, HTTP_PROVIDERS],
+    directives: [SpinnerComponent]
 })
 
 export class PostsComponent implements OnInit {
-    private _isLoading = true;
-	private _posts: Post[];
+    private _postsLoading;
+    private _commentsLoading;
+    private _posts: Post[];
+    private _users: User[];
     private currentPost: Post;
-    //private _comments: Comment[]; 
 
-    constructor(private _postService: PostService) {
-        
+    constructor(private _postService: PostService,
+        private _userService: UserService) {
+
     }
 
     ngOnInit() {
-        //Called after instruction
-        this._postService.getPosts().subscribe(x=> {
-            this._isLoading = false;
-			this._posts = x;
-            console.log("posts:" + x);
-            },
-            null,
-            () => { this._isLoading = false; });
+        this.getUsers();
+        this.getPosts();
     }
-	
-	select(post){
+
+    private select(post) {
         this.currentPost = post;
+        this._commentsLoading = true;
 
         this._postService.getComments(this.currentPost.id).subscribe(x => {
             this.currentPost.comments = x;
-            //this._comments = x;
-            console.log("comments:" + x);
-        });
-	}
+            console.log("Count of comments received:" + x.length);
+        },
+            null,
+            () => { this._commentsLoading = false; });
+    }
+
+    private onUserSelected(filter) {
+        this.currentPost = null;
+        this.getPosts(filter);
+    }
+
+    private getPosts(filter?) {
+        this._postsLoading = true;
+
+        this._postService.getPosts(filter).subscribe(x => {
+            this._postsLoading = false;
+            this._posts = x;
+            console.log("Count of Posts received::" + x.length);
+        },
+            null,
+            () => { this._postsLoading = false; });
+    }
+
+    private getUsers() {
+        this._userService.getUsers()
+            .subscribe(x => {
+                this._users = x;
+                console.log("Count of users received: " + x.length);
+            },
+            null);
+    }
 
 }
