@@ -4,6 +4,7 @@ import {HTTP_PROVIDERS} from 'angular2/http';
 import {Post} from './post';
 import {Comment} from './comment';
 import {SpinnerComponent} from './spinner.component';
+import {PaginationComponent} from './pagination.component';
 
 import {User } from './user';
 import {UserService } from './user.service';
@@ -11,6 +12,7 @@ import {UserService } from './user.service';
 
 @Component({
     selector: 'posts',
+    templateUrl: 'app/posts.component.html',
     styles: [`
          .posts li { cursor: default; }
          .posts li:hover { background: #ecf0f1; } 
@@ -22,64 +24,18 @@ import {UserService } from './user.service';
              border-color: #ecf0f1; 
              color: #2c3e50;}
     `],
-    template: `
-	<h2>Posts</h2>
-	<div class="row">
-		<div class="col-md-6">
-            <select class="form-control" (change)="onUserSelected({ userId: u.value })" #u>
-                <option value="">Select a user...</option>
-                <option *ngFor="#user of _users" value="{{user.id}}">
-                    {{user.name}}
-                </option>
-            </select>
-			<spinner [isVisible]="_postsLoading"></spinner>
-			<ul class="list-group posts">
-				<li 
-					class="list-group-item" 
-					*ngFor="#post of _posts"
-					[class.active]="currentPost == post"
-					(click) = "select(post)">
-						{{post.title}}
-				
-				</li>
-			</ul>
-		</div>		
-			
-		<div class="col-md-6">		
-			<div class="panel panel-default" *ngIf="currentPost" >
-				<div class="panel-heading">
-					<h3 class="panel-title">{{ currentPost.title }}</h3>
-				</div>
-				<div class="panel-body">
-					<p>{{ currentPost.body }}</p>
-                    <hr/>
-                    <spinner [isVisible]="_commentsLoading"></spinner>
-                    <div class="media" *ngFor="#comment of currentPost.comments">
-                        <div class="media-left">
-                            <a href="#">
-                                <img class="media-object thumbnail postImage" src="http://lorempixel.com/80/80/people/?random={{comment.id}}" alt="...">
-                            </a>
-                        </div>
-                        <div class="media-body">
-                            <h4 class="media-heading">{{comment.name}}</h4>
-                                {{comment.body}}
-                        </div>
-                     </div>
-				</div>
-			</div>
-		</div>		
-	</div>		
-    `,
     providers: [PostService, UserService, HTTP_PROVIDERS],
-    directives: [SpinnerComponent]
+    directives: [SpinnerComponent, PaginationComponent]
 })
 
 export class PostsComponent implements OnInit {
-    private _postsLoading;
-    private _commentsLoading;
-    private _posts: Post[];
-    private _users: User[];
-    private currentPost: Post;
+    _postsLoading;
+    _commentsLoading;
+    _posts = [];
+    _pagedPosts: Post[];
+    _users: User[];
+    currentPost: Post;
+    _postPageSize = 10;
 
     constructor(private _postService: PostService,
         private _userService: UserService) {
@@ -114,6 +70,7 @@ export class PostsComponent implements OnInit {
         this._postService.getPosts(filter).subscribe(x => {
             this._postsLoading = false;
             this._posts = x;
+            this._pagedPosts = _.take(this._posts, this._postPageSize);//this.getPostsInPage(1); //initielt
             console.log("Count of Posts received::" + x.length);
         },
             null,
@@ -127,6 +84,26 @@ export class PostsComponent implements OnInit {
                 console.log("Count of users received: " + x.length);
             },
             null);
+    }
+
+    onPageChange(page) { //Merke $event er page
+        console.log("onPageChange() Event: " + event);
+        this.currentPost = null;
+        this._pagedPosts = this.getPostsInPage(page);
+    }
+
+    private getPostsInPage(page) {
+        var result = [];
+        var startingIndex = (page - 1) * this._postPageSize;
+
+
+        result = _.take(_.rest(this._posts, startingIndex), this._postPageSize);
+        //var endIndex = Math.min(startingIndex + this._postPageSize, this._posts.length);
+
+        //for (var i = startingIndex; i < endIndex; i++)
+        //    result.push(this._posts[i]);
+
+        return result;
     }
 
 }

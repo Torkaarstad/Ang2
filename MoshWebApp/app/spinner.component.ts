@@ -6,6 +6,6 @@ import {Component, Input} from 'angular2/core';
         <i *ngIf="isVisible" class="fa fa-spinner fa-spin fa-3x"></i>
     `
 })
-export class SpinnerComponent implements OnInit {
+export class SpinnerComponent {
     @Input() isVisible = true;
 }
