@@ -3,16 +3,16 @@ import {PostService} from './post.service';
 import {HTTP_PROVIDERS} from 'angular2/http';
 import {Post} from './post';
 import {Comment} from './comment';
-import {SpinnerComponent} from './spinner.component';
-import {PaginationComponent} from './pagination.component';
+import {SpinnerComponent} from '../shared/spinner.component';
+import {PaginationComponent} from '../shared/pagination.component';
 
-import {User } from './user';
-import {UserService } from './user.service';
+import {User } from '../user/user';
+import {UserService } from '../user/user.service';
 
 
 @Component({
     selector: 'posts',
-    templateUrl: 'app/posts.component.html',
+    templateUrl: 'app/post/posts.component.html',
     styles: [`
          .posts li { cursor: default; }
          .posts li:hover { background: #ecf0f1; } 

@@ -9,7 +9,7 @@ import {UserService } from './user.service';
 
 @Component({
     selector: 'signup-form',
-    templateUrl: 'app/user.component.html',
+    templateUrl: 'app/user/user.component.html',
     providers: [UserService, HTTP_PROVIDERS]
 })
 export class UserComponent implements CanDeactivate, OnInit {
